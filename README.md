@@ -85,6 +85,7 @@ This ensures consistency between development and production environments.
 
 1. Clone the repository
 2. Install dependencies: `pip install -r requirements.txt`
+
 3. Set up environment variables:
    Create a `.env` file in the root directory with the following variables:
    ```
@@ -99,11 +100,32 @@ This ensures consistency between development and production environments.
    ```
    Replace `your_*_key` with actual API keys and values.
 
-4. Local run: `flask run`
-5. Heroku deployment:
+4. Database Setup:
+   - Ensure your database (PostgreSQL for production, SQLite for local development) is running.
+   - Initialize the database:
+     ```
+     flask db init
+     flask db migrate -m "Initial migration"
+     flask db upgrade
+     ```
+   - These commands will create the necessary tables in your database.
+
+5. Local run: 
+   ```
+   flask run
+   ```
+
+6. Heroku deployment:
    - Create a Heroku app
    - Set config vars in Heroku dashboard (use the same variables as in the `.env` file)
+   - Add PostgreSQL addon: `heroku addons:create heroku-postgresql:hobby-dev`
    - Push to Heroku: `git push heroku main`
+   - Run migrations on Heroku:
+     ```
+     heroku run flask db upgrade
+     ```
+
+Note: The `create_tables()` function in `app.py` will attempt to create tables if they don't exist, but using Flask-Migrate (as shown in step 4) is recommended for better database schema management, especially for future updates.
 
 ## 🔍 Monitoring and Logging
 
